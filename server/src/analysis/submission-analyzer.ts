@@ -1,4 +1,4 @@
-import type { Artifact, NoteSections, SubmissionContent } from '../../../shared/types.ts';
+import type { Artifact, ArtifactKind, NoteSections, SubmissionContent } from '../../../shared/types.ts';
 import { DesignModel } from '../domain/design-model.ts';
 import type { ArtifactReader, ArtifactReading, Diagnostic, ReaderRegistry } from './artifact-reader.ts';
 import { MermaidClassDiagramReader } from './mermaid-reader.ts';
@@ -11,6 +11,8 @@ export interface AnalyzedSubmission {
   diagnostics: Diagnostic[];
   /** All text the learner wrote. Quoted evidence must be found in here. */
   text: string;
+  /** The raw text of each artifact, for showing a reviewer exactly what was submitted. */
+  artifacts: { kind: ArtifactKind; text: string }[];
   hasDiagram: boolean;
 }
 
@@ -31,7 +33,7 @@ export class SubmissionAnalyzer {
     let hasDiagram = false;
     const sections: NoteSections = {};
     const diagnostics: Diagnostic[] = [];
-    const texts: string[] = [];
+    const artifacts: AnalyzedSubmission['artifacts'] = [];
 
     for (const artifact of content.artifacts) {
       const reading = this.read(artifact);
@@ -41,10 +43,11 @@ export class SubmissionAnalyzer {
       }
       Object.assign(sections, reading.sections);
       diagnostics.push(...reading.diagnostics);
-      texts.push(reading.text);
+      artifacts.push({ kind: artifact.kind, text: reading.text });
     }
 
-    return { model, sections, diagnostics, text: texts.join('\n\n'), hasDiagram };
+    const text = artifacts.map((a) => a.text).join('\n\n');
+    return { model, sections, diagnostics, text, artifacts, hasDiagram };
   }
 
   private read<A extends Artifact>(artifact: A): ArtifactReading {
