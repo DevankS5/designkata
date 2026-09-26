@@ -1,15 +1,5 @@
 import type { ChangeImpact, ClassChange } from '../../../shared/types.ts';
-import type { ClassKind, DesignModel, RelationKind, Relationship } from '../domain/design-model.ts';
-
-const VERB: Record<RelationKind, string> = {
-  inheritance: 'extends',
-  realization: 'implements',
-  composition: 'owns',
-  aggregation: 'has',
-  association: 'uses',
-  dependency: 'depends on',
-  link: 'is linked to',
-};
+import { describeRelationship, type ClassKind, type DesignModel } from '../domain/design-model.ts';
 
 const KIND_WORDS: Record<ClassKind, string> = {
   class: 'concrete',
@@ -17,8 +7,6 @@ const KIND_WORDS: Record<ClassKind, string> = {
   interface: 'an interface',
   enum: 'an enum',
 };
-
-const describe = (r: Relationship): string => `${r.from} ${VERB[r.kind]} ${r.to}`;
 
 /**
  * Compares two versions of a design. An existing class counts as touched when
@@ -29,8 +17,8 @@ const describe = (r: Relationship): string => `${r.from} ${VERB[r.kind]} ${r.to}
 export function diffModels(before: DesignModel, after: DesignModel): ChangeImpact {
   const beforeNames = new Set(before.classes.map((c) => c.name));
   const afterNames = new Set(after.classes.map((c) => c.name));
-  const beforeRelations = new Set(before.relationships.map(describe));
-  const afterRelations = new Set(after.relationships.map(describe));
+  const beforeRelations = new Set(before.relationships.map(describeRelationship));
+  const afterRelations = new Set(after.relationships.map(describeRelationship));
 
   const modifiedClasses: ClassChange[] = [];
   for (const previous of before.classes) {
@@ -44,7 +32,7 @@ export function diffModels(before: DesignModel, after: DesignModel): ChangeImpac
 
     if (previous.kind !== next.kind) added.push(`now ${KIND_WORDS[next.kind]}`);
     const outgoing = (model: DesignModel) =>
-      new Set(model.relationships.filter((r) => r.from === previous.name).map(describe));
+      new Set(model.relationships.filter((r) => r.from === previous.name).map(describeRelationship));
     const oldOut = outgoing(before);
     const newOut = outgoing(after);
     added.push(...[...newOut].filter((r) => !oldOut.has(r)).map((r) => `new link: ${r}`));

@@ -41,6 +41,21 @@ export interface Relationship {
   line: number;
 }
 
+const VERBS: Readonly<Record<RelationKind, string>> = {
+  inheritance: 'extends',
+  realization: 'implements',
+  composition: 'owns',
+  aggregation: 'has',
+  association: 'uses',
+  dependency: 'depends on',
+  link: 'is linked to',
+};
+
+/** "EVSpot extends ParkingSpot". Used in feedback, diffs and the reviewer prompt. */
+export function describeRelationship(r: Relationship): string {
+  return `${r.from} ${VERBS[r.kind]} ${r.to}`;
+}
+
 const USES: ReadonlySet<RelationKind> = new Set(['association', 'dependency', 'composition', 'aggregation']);
 const EXTENDS: ReadonlySet<RelationKind> = new Set(['inheritance', 'realization']);
 
