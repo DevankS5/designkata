@@ -25,6 +25,8 @@ export interface EvaluatorResult {
   summary?: string;
   nextFocus?: { criterionId: CriterionId; action: string };
   evidence?: { verified: number; total: number };
+  /** Who judged: a model id for an LLM, a name for a human reviewer. */
+  reviewer?: string;
 }
 
 /**
