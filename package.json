@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit && tsc --noEmit -p web",
-    "check:text": "node scripts/check-text.mjs"
+    "check:text": "node scripts/check-text.mjs",
+    "check:llm": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning server/scripts/check-llm.ts"
   },
   "dependencies": {
     "express": "^5.2.1",
