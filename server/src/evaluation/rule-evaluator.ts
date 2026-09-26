@@ -1,6 +1,7 @@
 import type { Finding } from '../../../shared/types.ts';
 import type { EvaluationContext, Evaluator, EvaluatorResult } from './evaluator.ts';
 import { missingConceptRule } from './rules/coverage-rules.ts';
+import { godClassRule, missingAbstractionRule } from './rules/design-rules.ts';
 import type { Rule } from './rules/rule.ts';
 import { diagramSyntaxRule, missingSectionRule } from './rules/structure-rules.ts';
 
@@ -8,6 +9,8 @@ export const DEFAULT_RULES: readonly Rule[] = [
   diagramSyntaxRule,
   missingSectionRule,
   missingConceptRule,
+  godClassRule,
+  missingAbstractionRule,
 ];
 
 /** Runs every rule and returns warnings before notes. Instant, free and repeatable. */
