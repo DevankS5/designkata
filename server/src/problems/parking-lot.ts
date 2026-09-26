@@ -90,4 +90,70 @@ export const parkingLot: Problem = {
   }
   class Vehicle
   ParkingLot ..> Vehicle`,
+  // A typical first attempt: it works, but one class does everything and nothing can vary without editing it.
+  sample: {
+    artifacts: [
+      {
+        kind: 'design-notes',
+        sections: {
+          requirements: 'Vehicles enter, get a ticket, park, and pay at exit. Support bike, car and truck. The lot has multiple levels.',
+          entities:
+            'ParkingLot manages everything: levels, spots, tickets and payments. Vehicle has a type. Ticket stores the entry time and the spot.',
+          flows:
+            'Entry: ParkingLot.parkVehicle loops over the levels to find a free spot of the right type and returns a ticket. Exit: ParkingLot.unparkVehicle calculates the fee with if-else on the vehicle type, takes payment and marks the spot free.',
+          patterns: 'Singleton for ParkingLot because there is only one lot.',
+          edgeCases: 'If no spot is free, parkVehicle returns null.',
+        },
+      },
+      {
+        kind: 'class-diagram',
+        format: 'mermaid',
+        source: `classDiagram
+  class ParkingLot {
+    -List~Level~ levels
+    -Map~String,Ticket~ activeTickets
+    +getInstance() ParkingLot
+    +parkVehicle(Vehicle v) Ticket
+    +unparkVehicle(String ticketId) double
+    +calculateFee(Ticket t) double
+    +findFreeSpot(VehicleType type) ParkingSpot
+    +processPayment(double amount, String mode) boolean
+    +printReceipt(Ticket t)
+    +updateDisplayBoard()
+    +addLevel(Level l)
+    +removeLevel(int id)
+  }
+  class Level {
+    +int id
+    +List~ParkingSpot~ spots
+  }
+  class ParkingSpot {
+    +int id
+    +VehicleType type
+    +boolean isFree
+  }
+  class Vehicle {
+    +String number
+    +VehicleType type
+  }
+  class VehicleType {
+    <<enumeration>>
+    BIKE
+    CAR
+    TRUCK
+  }
+  class Ticket {
+    +String id
+    +Vehicle vehicle
+    +ParkingSpot spot
+    +long entryTime
+  }
+  ParkingLot "1" *-- "many" Level
+  Level "1" *-- "many" ParkingSpot
+  ParkingLot --> Ticket
+  Ticket --> Vehicle
+  Ticket --> ParkingSpot`,
+      },
+    ],
+  },
 };
