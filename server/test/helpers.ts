@@ -36,3 +36,27 @@ export function contextFor(options: {
     ...(options.withTwist ? { twist: problem.twist } : {}),
   };
 }
+
+/** A Parking Lot diagram that covers every concept and abstracts every variation point. */
+export const COMPLETE_LOT = `classDiagram
+  class ParkingLot
+  class Level
+  class ParkingSpot
+  class Vehicle
+  class Ticket
+  class Payment
+  class PricingStrategy {
+    <<interface>>
+    +price(Ticket t) Money
+  }
+  class SpotAllocationStrategy {
+    <<interface>>
+  }
+  class PaymentMethod {
+    <<interface>>
+  }
+  ParkingLot *-- Level
+  Level *-- ParkingSpot
+  ParkingLot --> PricingStrategy
+  ParkingLot --> SpotAllocationStrategy
+  Payment --> PaymentMethod`;
