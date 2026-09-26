@@ -7,6 +7,8 @@ export interface LlmRequest {
   messages: LlmMessage[];
   /** JSON schema the answer must follow. */
   schema: { name: string; schema: Record<string, unknown> };
+  /** Defaults to 0: the same design should get the same review. */
+  temperature?: number;
 }
 
 /** A language model that answers in text. The provider (OpenRouter today) is an implementation detail. */

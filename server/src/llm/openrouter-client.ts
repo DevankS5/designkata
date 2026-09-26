@@ -91,7 +91,7 @@ export class OpenRouterClient implements LlmClient {
     return {
       model: this.model,
       messages: request.messages,
-      temperature: 0,
+      temperature: request.temperature ?? 0,
       seed: 7,
       response_format: {
         type: 'json_schema',
