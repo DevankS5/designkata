@@ -114,3 +114,105 @@ export interface FeedbackReport {
 }
 
 export type EvaluationStatus = 'SUBMITTED' | 'EVALUATING' | 'COMPLETED' | 'FAILED';
+
+// ---------- The HTTP API ----------
+
+export type Difficulty = 'Easy' | 'Medium' | 'Hard';
+export type LevelMap = Partial<Record<CriterionId, Level>>;
+
+export interface ProblemSummaryDto {
+  slug: string;
+  title: string;
+  difficulty: Difficulty;
+  timeboxMinutes: number;
+  summary: string;
+  origin?: string;
+  attempts: number;
+  latestLevels?: LevelMap;
+}
+
+export interface ProblemDto {
+  slug: string;
+  title: string;
+  difficulty: Difficulty;
+  timeboxMinutes: number;
+  summary: string;
+  context: string;
+  origin?: string;
+  requirements: string[];
+  outOfScope: string[];
+  edgeCases: string[];
+  starterDiagram: string;
+  sample?: SubmissionContent;
+  twist: { id: string; title: string; prompt: string };
+}
+
+export interface SubmissionSummaryDto {
+  id: string;
+  version: number;
+  twistId?: string;
+  createdAt: string;
+  status: EvaluationStatus;
+  levels: LevelMap;
+}
+
+export interface AttemptDto {
+  id: string;
+  problemSlug: string;
+  draft: SubmissionContent;
+  createdAt: string;
+  updatedAt: string;
+  submissions: SubmissionSummaryDto[];
+  /** The twist unlocks once the latest version has been reviewed. */
+  twistUnlocked: boolean;
+}
+
+export interface SubmissionDto {
+  id: string;
+  attemptId: string;
+  problemSlug: string;
+  version: number;
+  twistId?: string;
+  createdAt: string;
+  content: SubmissionContent;
+  evaluation: {
+    status: EvaluationStatus;
+    tries: number;
+    canRetry: boolean;
+    error?: string;
+    report?: FeedbackReport;
+  };
+  previousLevels?: LevelMap;
+}
+
+export interface WeaknessDto {
+  criterionId: CriterionId;
+  /** In how many of the recent reviews this criterion was at level 1 or 2. */
+  lowCount: number;
+  outOf: number;
+  averageLevel: number;
+}
+
+export interface RecurringFindingDto {
+  ruleId: string;
+  count: number;
+  outOf: number;
+  example: string;
+}
+
+export interface ProgressDto {
+  reviewed: number;
+  weaknesses: WeaknessDto[];
+  recurringFindings: RecurringFindingDto[];
+  history: { problemSlug: string; title: string; attemptId: string; versions: SubmissionSummaryDto[] }[];
+}
+
+export interface HealthDto {
+  ok: boolean;
+  ai: { enabled: boolean; model?: string };
+  database: string;
+}
+
+export interface ApiErrorDto {
+  error: { code: string; message: string };
+}
