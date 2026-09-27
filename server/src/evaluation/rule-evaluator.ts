@@ -1,6 +1,6 @@
 import type { Finding } from '../../../shared/types.ts';
 import type { EvaluationContext, Evaluator, EvaluatorResult } from './evaluator.ts';
-import { missingConceptRule } from './rules/coverage-rules.ts';
+import { edgeCaseRule, missingConceptRule } from './rules/coverage-rules.ts';
 import {
   deepInheritanceRule,
   dependencyCycleRule,
@@ -21,6 +21,7 @@ export const DEFAULT_RULES: readonly Rule[] = [
   orphanClassRule,
   publicStateRule,
   deepInheritanceRule,
+  edgeCaseRule,
 ];
 
 /** Runs every rule and returns warnings before notes. Instant, free and repeatable. */

@@ -1,5 +1,5 @@
 import type { Finding } from '../../../../shared/types.ts';
-import { nameMatches, textMentions } from './matching.ts';
+import { nameMatches, textContains, textMentions } from './matching.ts';
 import type { Rule } from './rule.ts';
 
 /**
@@ -29,3 +29,27 @@ export const missingConceptRule: Rule = {
     return findings;
   },
 };
+
+/** The brief's edge cases that the notes never touch. A prompt to think, not a verdict. */
+export const edgeCaseRule: Rule = {
+  id: 'edge-cases',
+  check({ problem, analysis }) {
+    const notes = Object.values(analysis.sections).join('\n');
+    if (!notes.trim()) return [];
+    const missing = problem.edgeCases.filter((e) => !textContains(notes, e.keywords));
+    if (missing.length === 0) return [];
+    return [
+      {
+        ruleId: 'edge-cases',
+        severity: 'info',
+        criterionId: 'behaviour',
+        message: `Your notes do not mention ${missing.length} of the ${problem.edgeCases.length} edge cases worth handling.`,
+        suggestion: `Say which class handles each: ${missing.map((e) => lowerFirst(e.description)).join(' ')}`,
+      },
+    ];
+  },
+};
+
+function lowerFirst(text: string): string {
+  return text.charAt(0).toLowerCase() + text.slice(1);
+}
