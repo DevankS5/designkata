@@ -28,15 +28,15 @@ Learners say the same thing in their own words. A Hello Interview community thre
 
 ## 3. A small experiment: what does an LLM actually tell you?
 
-I gave the same flawed Parking Lot design (one class that parks, prices, takes payment and prints receipts) to `deepseek/deepseek-v4.1-flash` five times in each of three ways (`npm run experiment:consistency`):
+I gave the same flawed Parking Lot design (one class that parks, prices, takes payment and prints receipts) to `deepseek/deepseek-v4.1-flash` five times in each of three ways, and then repeated the whole run with the model's reasoning switched off (`npm run experiment:consistency`):
 
-| Setup | Result over 5 runs |
-|---|---|
-| A. "Rate it from 1 to 10", default temperature, like a chat app | 5, 6, 5, 5, 4 |
-| B. The same question at temperature 0 | 5, 5, 5, 5, 5 |
-| C. DesignKata's rubric review at temperature 0 | Six levels per run. Five criteria got the same level all five times; one moved between 2 and 3. Responsibilities and extensibility were at level 1 every time. 46 of 47 quotes were found word for word in the design. |
+| Setup | Run 1 (reasoning on) | Run 2 (reasoning off) |
+|---|---|---|
+| A. "Rate it from 1 to 10", default temperature, like a chat app | 5, 6, 5, 5, 4 | 6, 6, 6, 6, 6 |
+| B. The same question at temperature 0 | 5, 5, 5, 5, 5 | 6, 6, 6, 6, 6 |
+| C. DesignKata's rubric at temperature 0 | 5 of 6 criteria gave the same level every time; 46 of 47 quotes found word for word | 5 of 6 the same every time; 66 of 68 quotes found |
 
-The surprise for me: **temperature 0 alone makes a bare score repeatable**, so consistency is not the real problem. The real problem is that "5 out of 10" does not say *what* to change, and nothing in a chat reply can be checked against what I actually wrote. The rubric run named the two real faults (one class doing everything, pricing that cannot vary) every single time, and code could verify all but one of its 47 quotes. That result shaped the product more than any competitor did. Raw output: `docs/experiments/consistency-2026-09-26.txt`.
+The surprise for me: **a bare score is easy to make repeatable**. Temperature 0 did it, and so did turning reasoning off. But the score moved from 5 to 6 when one setting changed, and "6 out of 10" still does not say *what* to change. The rubric named the same two faults (one class doing everything, pricing that cannot vary) at level 1 in 19 of 20 judgments, and code could verify 112 of its 115 quotes. So consistency was never the real gap; **specific, checkable feedback** is. That shaped the product more than any competitor did. Raw output is in `docs/experiments/`.
 
 ## 4. Gaps worth solving
 
