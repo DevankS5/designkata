@@ -1,0 +1,114 @@
+classDiagram
+  class PracticeService {
+    +startAttempt(learnerId, problemSlug) AttemptDto
+    +saveDraft(learnerId, attemptId, content)
+    +submit(learnerId, attemptId, input) SubmissionDto
+    +retry(learnerId, submissionId) SubmissionDto
+    +checkStructure(problemSlug, content) Finding[]
+    +progress(learnerId) ProgressDto
+  }
+  class Problem {
+    -List~Concept~ concepts
+    -List~VariationPoint~ variationPoints
+    -Twist twist
+  }
+  class Attempt {
+    -SubmissionContent draft
+    +saveDraft(content, now)
+    +submit(command) SubmitOutcome
+  }
+  class Submission {
+    -int version
+    -SubmissionContent content
+    -String contentHash
+    -String idempotencyKey
+  }
+  class Evaluation {
+    -EvaluationStatus status
+    -int tries
+    -int version
+    +start(now, leaseMs)
+    +recordPartial(report)
+    +complete(report, now)
+    +fail(error, now, partial)
+    +releaseExpiredLease(now)
+    +retry()
+  }
+  class SubmissionAnalyzer {
+    +analyze(content) AnalyzedSubmission
+  }
+  class ArtifactReader {
+    <<interface>>
+    +read(artifact) ArtifactReading
+  }
+  class MermaidClassDiagramReader
+  class DesignNotesReader
+  class DesignModel {
+    +dependenciesOf(name) String[]
+    +subtypesOf(name) String[]
+    +inheritanceDepth(name) int
+    +dependencyCycles() String[][]
+  }
+  class EvaluationPipeline {
+    +run(context, onPartial) FeedbackReport
+  }
+  class Evaluator {
+    <<interface>>
+    +evaluate(context) EvaluatorResult
+  }
+  class RuleBasedEvaluator
+  class LlmRubricEvaluator
+  class Rule {
+    <<interface>>
+    +check(context) Finding[]
+  }
+  class EvidenceVerifier {
+    +verify(quote, analysis) boolean
+  }
+  class LlmClient {
+    <<interface>>
+    +complete(request) String
+  }
+  class OpenRouterClient
+  class FakeLlmClient
+  class SubmissionEvaluator {
+    +evaluate(submission, onPartial) FeedbackReport
+  }
+  class EvaluationWorker {
+    +tick()
+    +nudge()
+    +drain()
+  }
+  class SubmissionRepository {
+    +insert(submission)
+    +claimNext(now, leaseMs) Submission
+    +saveEvaluation(submission, expectedVersion) boolean
+    +findExpiredLeases(now) Submission[]
+  }
+  class AttemptRepository {
+    +save(attempt)
+    +findById(id) Attempt
+  }
+  PracticeService --> AttemptRepository
+  PracticeService --> SubmissionRepository
+  PracticeService ..> Attempt
+  PracticeService ..> EvaluationWorker : nudges
+  Attempt ..> Problem
+  Attempt ..> Submission : creates
+  Submission *-- Evaluation
+  EvaluationWorker --> SubmissionRepository
+  EvaluationWorker --> SubmissionEvaluator
+  SubmissionEvaluator --> EvaluationPipeline
+  SubmissionEvaluator --> SubmissionAnalyzer
+  SubmissionAnalyzer --> ArtifactReader
+  SubmissionAnalyzer ..> DesignModel : builds
+  MermaidClassDiagramReader ..|> ArtifactReader
+  DesignNotesReader ..|> ArtifactReader
+  EvaluationPipeline --> Evaluator
+  RuleBasedEvaluator ..|> Evaluator
+  LlmRubricEvaluator ..|> Evaluator
+  RuleBasedEvaluator --> Rule
+  LlmRubricEvaluator --> LlmClient
+  LlmRubricEvaluator --> EvidenceVerifier
+  OpenRouterClient ..|> LlmClient
+  FakeLlmClient ..|> LlmClient
