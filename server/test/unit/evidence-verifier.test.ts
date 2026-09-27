@@ -21,4 +21,9 @@ describe('EvidenceVerifier', () => {
     expect(verifier.verify('ParkingAttendant', analysis)).toBe(false);
     expect(verifier.verify('...', analysis)).toBe(false);
   });
+
+  it('only matches whole words', () => {
+    expect(verifier.verify('Allocation', analysis)).toBe(false); // only inside SpotAllocationStrategy
+    expect(verifier.verify('SpotAllocationStrategy', analysis)).toBe(true);
+  });
 });

@@ -10,11 +10,12 @@ const normalize = (text: string): string => text.toLowerCase().replace(/[^a-z0-9
  */
 export class EvidenceVerifier {
   verify(quote: string, analysis: AnalyzedSubmission): boolean {
-    const haystack = normalize(analysis.text);
+    // Padded with spaces so only whole words match: "spot" is not found inside "parkingspot".
+    const haystack = ` ${normalize(analysis.text)} `;
     const pieces = quote
       .split(/\.\.\.|…/)
       .map(normalize)
       .filter((piece) => piece.length >= 3);
-    return pieces.length > 0 && pieces.every((piece) => haystack.includes(piece));
+    return pieces.length > 0 && pieces.every((piece) => haystack.includes(` ${piece} `));
   }
 }
