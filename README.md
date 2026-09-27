@@ -8,11 +8,13 @@ Built by Devank Srivastava for the CipherSchools engineering assignment, Septemb
 
 ![Feedback on a twist answer: the next focus, a one-paragraph summary and the rubric, with every quote checked](docs/images/feedback.webp)
 
+**Live demo:** https://designkata.onrender.com (free host, first load after idle takes about a minute)
+
 **Documents:** [Research note](docs/research-note.md) · [Design note](docs/design-note.md) · [Decision log](docs/decisions.md) · [AI usage](AI_USAGE.md) · PDFs in [`docs/pdf/`](docs/pdf/)
 
 ## Try it in 60 seconds
 
-1. Run it locally with the two commands below, or open the live demo if one is linked on the repository page. The free host sleeps when idle, so the first load can take about a minute.
+1. Open the [live demo](https://designkata.onrender.com), or run it locally with the two commands below. The free host sleeps when idle, so the first load can take about a minute.
 2. Open **Parking Lot**, click **Load sample design**, then **Submit for review**. The sample is a deliberately typical first attempt.
 3. Rule findings appear within about a second. The rubric review follows in about 15 seconds. Look for the green "Found in your design" quotes.
 4. Click **Take the twist**, add an EV charging spot to the diagram, submit, and read the blast radius.
