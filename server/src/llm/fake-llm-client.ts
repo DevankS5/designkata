@@ -8,8 +8,14 @@ export class FakeLlmClient implements LlmClient {
   readonly requests: LlmRequest[] = [];
   private readonly replies: Reply[];
 
-  constructor(replies: Reply[]) {
+  constructor(replies: Reply[] = []) {
     this.replies = [...replies];
+  }
+
+  /** Adds answers to the end of the script. */
+  queue(...replies: Reply[]): this {
+    this.replies.push(...replies);
+    return this;
   }
 
   async complete(request: LlmRequest): Promise<string> {
