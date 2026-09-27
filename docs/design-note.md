@@ -33,17 +33,26 @@ flowchart LR
 
 ## 2. Domain model
 
+The practice side: use cases, the aggregate, and the job queue.
+
 ```mermaid
 classDiagram
+  direction LR
   PracticeService --> AttemptRepository
   PracticeService --> SubmissionRepository
   PracticeService ..> Attempt
   PracticeService ..> EvaluationWorker : nudges
-  Attempt ..> Submission : creates versions
   Attempt ..> Problem
+  Attempt ..> Submission : creates versions
   Submission *-- Evaluation
-  EvaluationWorker --> SubmissionRepository
+  EvaluationWorker --> SubmissionRepository : claims with a lease
   EvaluationWorker --> SubmissionEvaluator
+```
+
+The evaluation side: formats in, judges out.
+
+```mermaid
+classDiagram
   SubmissionEvaluator --> SubmissionAnalyzer
   SubmissionEvaluator --> EvaluationPipeline
   SubmissionAnalyzer --> ArtifactReader
@@ -127,6 +136,7 @@ The reviewer is strict: even the strong design averaged 3.2, so level 4 has to b
 
 ```mermaid
 stateDiagram-v2
+  direction LR
   [*] --> SUBMITTED: submit, one atomic write
   SUBMITTED --> EVALUATING: worker claims with a lease
   EVALUATING --> COMPLETED: report saved
