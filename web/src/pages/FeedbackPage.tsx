@@ -292,7 +292,7 @@ function ImpactPanel({ impact, version, twist }: { impact: ChangeImpact; version
               <ul className="small">
                 {impact.modifiedClasses.map((c) => (
                   <li key={c.name}>
-                    <b>{c.name}</b>: {[...c.added.map((a) => `+ ${a}`), ...c.removed.map((r) => `- ${r}`)].join('; ')}
+                    <b>{c.name}</b>: {[...c.added.map((a) => `added ${a}`), ...c.removed.map((r) => `removed ${r}`)].join('; ')}
                   </li>
                 ))}
               </ul>
