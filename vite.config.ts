@@ -4,5 +4,6 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   root: 'web',
   plugins: [react()],
-  build: { outDir: 'dist', emptyOutDir: true },
+  // Mermaid's internals make a ~660 kB chunk. It is loaded lazily, only where a diagram is drawn.
+  build: { outDir: 'dist', emptyOutDir: true, chunkSizeWarningLimit: 700 },
 });

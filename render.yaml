@@ -1,0 +1,23 @@
+# Render blueprint: one web service runs the API, the evaluation worker and the built web app.
+# MONGO_URI and OPENROUTER_API_KEY are secrets, entered in the Render dashboard, never here.
+services:
+  - type: web
+    name: designkata
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: MONGO_URI
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        value: deepseek/deepseek-v4.1-flash
+      # The in-memory MongoDB is only for local runs; skip downloading its binary on Render.
+      - key: MONGOMS_DISABLE_POSTINSTALL
+        value: "1"

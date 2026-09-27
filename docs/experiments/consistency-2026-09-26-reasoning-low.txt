@@ -1,0 +1,14 @@
+Run on 2026-09-26 at about 20:10 IST with reasoning low: npm run experiment:consistency
+
+Model deepseek/deepseek-v4.1-flash, 5 runs each, on the Parking Lot sample design.
+
+A. Naive "rate 1-10", default temperature: [5, 6, 5, 5, 4]  spread 2
+B. Naive "rate 1-10", temperature 0:       [5, 5, 5, 5, 5]  spread 0
+C. DesignKata rubric, temperature 0 (level 1-4 per criterion):
+   requirements      [2, 2, 2, 2, 2]  spread 0
+   responsibilities  [1, 1, 1, 1, 1]  spread 0
+   coupling          [2, 2, 2, 2, 2]  spread 0
+   extensibility     [1, 1, 1, 1, 1]  spread 0
+   behaviour         [3, 2, 2, 3, 2]  spread 1
+   tradeoffs         [2, 2, 2, 2, 2]  spread 0
+   quotes found in the submission: 46 of 47
