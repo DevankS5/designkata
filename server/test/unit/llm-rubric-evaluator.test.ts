@@ -56,6 +56,12 @@ describe('LlmRubricEvaluator', () => {
     expect(result.criteria!.find((c) => c.criterionId === 'coupling')!.confidence).toBe('low');
   });
 
+  it('shows no strength instead of "None"', async () => {
+    const llm = new FakeLlmClient([JSON.stringify(answer({ tradeoffs: { ...judgment(1), strength: 'None.' } }))]);
+    const result = await new LlmRubricEvaluator(llm).evaluate(contextFor({ diagram: COMPLETE_LOT }));
+    expect(result.criteria!.find((c) => c.criterionId === 'tradeoffs')!.strength).toBe('');
+  });
+
   it('removes em dashes from what the model wrote', async () => {
     const llm = new FakeLlmClient([JSON.stringify(answer())]);
     const result = await new LlmRubricEvaluator(llm).evaluate(contextFor({ diagram: COMPLETE_LOT }));

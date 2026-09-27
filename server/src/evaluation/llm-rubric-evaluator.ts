@@ -67,7 +67,7 @@ export class LlmRubricEvaluator implements Evaluator {
         criterionId: id,
         level: judgment.level as Level,
         evidence,
-        strength: clean(judgment.strength),
+        strength: meaningful(clean(judgment.strength)),
         concern: clean(judgment.concern),
         suggestion: clean(judgment.suggestion),
         confidence: unsupported ? 'low' : judgment.confidence,
@@ -88,6 +88,11 @@ export class LlmRubricEvaluator implements Evaluator {
 // Built from code points so this file itself contains no dash characters.
 const EM_DASH = new RegExp(`\\s*${String.fromCodePoint(0x2014)}\\s*`, 'g');
 const EN_DASH = new RegExp(String.fromCodePoint(0x2013), 'g');
+
+/** "None" or "N/A" is not a strength; show nothing instead. */
+function meaningful(text: string): string {
+  return /^(none|n\/a|na|nothing|-)\.?$/i.test(text) ? '' : text;
+}
 
 /** Models love em dashes; the product never shows them. */
 function clean(text: string): string {
