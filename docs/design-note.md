@@ -204,4 +204,4 @@ The first thing to separate is the worker. It would run as its own process readi
 
 **Next steps.** Human review, code submissions, a calibration set per problem, a timed interview mode, a hint ladder, and sign-in with CipherSchools accounts.
 
-**Tests:** 166 across unit, integration and end-to-end, run against a real MongoDB with a fake LLM. They cover every rule, the state machine, idempotency, concurrent claims, lease recovery, a failed review and its retry, validation and ownership. CI runs them on every push.
+**Tests:** 171 across unit, integration and end-to-end, run against a real MongoDB with a fake LLM. They cover every rule, the state machine, idempotency, concurrent claims, lease recovery, a failed review and its retry, validation and ownership. CI runs them on every push.

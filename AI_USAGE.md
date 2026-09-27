@@ -5,7 +5,7 @@ I built DesignKata with **Claude Code** (Anthropic's coding agent) as my pair pr
 Who did what:
 - **Claude:** wrote most of the code and the first drafts of these documents.
 - **Me:** set the constraints, made the calls below, reviewed the work and used the app end to end.
-- **The tests:** 166 of them, run in CI, decided whether any of it was actually right.
+- **The tests:** 171 of them, run in CI, decided whether any of it was actually right.
 
 These are the five decisions where AI help mattered most, and what I did with each.
 

@@ -69,7 +69,7 @@ The design note has the domain model, the state machine, the failure table and b
 | Command | What it does |
 |---|---|
 | `npm run dev` | API, worker and React app on one port, with hot reload |
-| `npm test` | 166 tests: unit, integration and end to end, against a real MongoDB with a fake LLM |
+| `npm test` | 171 tests: unit, integration and end to end, against a real MongoDB with a fake LLM |
 | `npm run typecheck` | Type-checks the server and the web app |
 | `npm run check:text` | Fails on em dashes, en dashes or anything that looks like an API key (runs in CI) |
 | `npm run build` / `npm start` | Production build and server |
