@@ -20,7 +20,8 @@
     "check:llm": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning server/scripts/check-llm.ts",
     "experiment:consistency": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning server/scripts/consistency-experiment.ts",
     "calibrate": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning server/scripts/calibrate.ts",
-    "dogfood": "node --disable-warning=ExperimentalWarning server/scripts/dogfood.ts"
+    "dogfood": "node --disable-warning=ExperimentalWarning server/scripts/dogfood.ts",
+    "pdf": "node scripts/build-pdfs.mjs"
   },
   "dependencies": {
     "express": "^5.2.1",
@@ -38,6 +39,7 @@
     "@types/react-dom": "^19.3.0",
     "@types/supertest": "^7.2.1",
     "@vitejs/plugin-react": "^6.1.1",
+    "marked": "^18.0.14",
     "mongodb-memory-server": "^11.3.0",
     "supertest": "^7.3.0",
     "typescript": "^7.0.2",
