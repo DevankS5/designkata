@@ -6,6 +6,8 @@ Pick a low-level design problem, write short notes and a class diagram, and subm
 
 Built by Devank Srivastava for the CipherSchools engineering assignment, September 2026.
 
+![Feedback on a twist answer: the next focus, a one-paragraph summary and the rubric, with every quote checked](docs/images/feedback.webp)
+
 **Documents:** [Research note](docs/research-note.md) · [Design note](docs/design-note.md) · [Decision log](docs/decisions.md) · [AI usage](AI_USAGE.md) · PDFs in [`docs/pdf/`](docs/pdf/)
 
 ## Try it in 60 seconds
@@ -34,6 +36,8 @@ For production mode, run `npm run build && npm start`. Deployment is described i
 
 ## How it works
 
+![The workspace: the brief on the left, the Mermaid editor with a live diagram on the right](docs/images/workspace.webp)
+
 ```
 Choose a problem -> design (notes + Mermaid diagram) -> submit (202, stored first)
   -> rules (about 1 s) -> AI rubric review, every quote verified (about 15 s)
@@ -49,6 +53,8 @@ The rubric has six criteria, each on four levels that are described in words, an
 When a review is slow or fails, nothing is lost. The submission is stored first and a background worker claims the review with a lease, so rule findings show while the AI works. Provider errors are retried with backoff, and a failed review keeps its rule findings and can be retried. If the worker crashes, its job is picked up again, and the same `Idempotency-Key` never creates a duplicate.
 
 The design note has the domain model, the state machine, the failure table and both change tests.
+
+![The twist, measured: a blast radius of 0 because the new EV classes plugged into existing abstractions](docs/images/twist.webp)
 
 ## Measured results
 
