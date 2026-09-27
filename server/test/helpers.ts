@@ -60,3 +60,28 @@ export const COMPLETE_LOT = `classDiagram
   ParkingLot --> PricingStrategy
   ParkingLot --> SpotAllocationStrategy
   Payment --> PaymentMethod`;
+
+/** A valid LLM review answer (as JSON text) whose quotes come from FULL_NOTES. */
+export function reviewAnswerJson(level = 3): string {
+  const judgment = {
+    evidence: ['Level owns spots'],
+    strength: 'Clear ownership.',
+    concern: 'Nothing major.',
+    level,
+    suggestion: 'Keep the lot as a coordinator.',
+    confidence: 'high',
+  };
+  return JSON.stringify({
+    criteria: {
+      requirements: judgment,
+      responsibilities: judgment,
+      coupling: judgment,
+      extensibility: judgment,
+      behaviour: judgment,
+      tradeoffs: judgment,
+    },
+    strengths: ['Pricing is behind an interface.'],
+    summary: 'A solid design.',
+    nextFocus: { criterionId: 'coupling', action: 'Depend on SpotAllocationStrategy only.' },
+  });
+}
