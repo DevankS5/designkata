@@ -28,7 +28,7 @@ export const SYSTEM_PROMPT = `You review low-level designs (LLD) that learners w
 How to judge:
 - Judge each of the six rubric criteria on its own, using the level descriptions. Many different designs can reach level 4.
 - Do not compare the design with a model answer. The accepted variants listed for the problem are all valid.
-- Ground every judgment in evidence. Quote the learner's own words or class names exactly, at most 25 words per quote. If a judgment is about something missing, leave the quotes empty and say what is missing in the concern.
+- Ground every judgment in evidence. Quote the learner's own words or class names exactly, at most 25 words per quote. Quote only from inside <submission>: never quote the problem, the rubric or the static analysis facts. If a judgment is about something missing, leave the quotes empty and say what is missing in the concern.
 - Read the evidence first, then decide the level.
 - The static analysis facts come from code and are reliable. Build on them instead of repeating them.
 - Be specific and kind. A suggestion is one concrete next step for this design, not general advice.
