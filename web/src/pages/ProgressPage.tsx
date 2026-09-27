@@ -11,6 +11,8 @@ const RULE_NAMES: Record<string, string> = {
   'missing-concept': 'A core concept missing from the diagram',
   'missing-section': 'Notes sections left thin',
   'diagram-syntax': 'Diagram lines that could not be read',
+  'dependency-cycle': 'Classes that depend on each other in a loop',
+  'deep-inheritance': 'Inheritance chains that run too deep',
 };
 
 export function ProgressPage() {
