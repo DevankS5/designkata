@@ -44,13 +44,15 @@ pre { background: #f6f3ec; border: 1px solid #e6dfd1; border-radius: 4pt; paddin
 pre code { background: none; padding: 0; font-size: inherit; }
 pre.mermaid { background: none; border: none; text-align: center; padding: 0; margin: 4pt 0 8pt; }
 pre.mermaid svg { max-width: 100%; max-height: 105mm; height: auto; }
+img { max-width: 100%; border: 1px solid #ddd5c5; border-radius: 4pt; margin: 4pt 0; }
 strong { color: #111; }
 a { color: #2b4c7e; text-decoration: none; }
 .page-break { break-before: page; }
 `;
 
 function page(title, markdown) {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escapeHtml(title)}</title>
+  // Relative links and images in the Markdown resolve from the repository root.
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><base href="${pathToFileURL(root + path.sep).href}"><title>${escapeHtml(title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>${css}</style></head><body>${marked.parse(markdown)}
