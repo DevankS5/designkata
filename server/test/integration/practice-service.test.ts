@@ -133,6 +133,21 @@ describe('PracticeService', () => {
     expect(v2.submission).toMatchObject({ version: 2, twistId: 'ev-charging', previousLevels: { coupling: 2 } });
   });
 
+  it('caps reviews across all learners, since the learner id comes from the browser', async () => {
+    practice = new PracticeService({
+      attempts: new AttemptRepository(models),
+      submissions,
+      worker: { nudge: () => {} },
+      globalLimiter: new RateLimiter(1, 60 * 60 * 1000),
+    });
+    const mine = await practice.startAttempt(LEARNER, 'parking-lot');
+    await practice.submit(LEARNER, mine.id, { content: content(FULL_NOTES, COMPLETE_LOT), idempotencyKey: 'k1' });
+    const theirs = await practice.startAttempt(STRANGER, 'parking-lot');
+    await expect(
+      practice.submit(STRANGER, theirs.id, { content: content(FULL_NOTES, COMPLETE_LOT), idempotencyKey: 'k2' }),
+    ).rejects.toMatchObject({ code: 'rate-limited' });
+  });
+
   it('limits reviews per learner per hour', async () => {
     practice = service(1);
     const attempt = await practice.startAttempt(LEARNER, 'parking-lot');

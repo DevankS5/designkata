@@ -18,7 +18,8 @@ export class RateLimiter {
     const recent = (this.hits.get(key) ?? []).filter((time) => now - time < this.windowMs);
     const allowed = recent.length < this.limit;
     if (allowed) recent.push(now);
-    this.hits.set(key, recent);
+    if (recent.length > 0) this.hits.set(key, recent);
+    else this.hits.delete(key);
     return allowed;
   }
 }

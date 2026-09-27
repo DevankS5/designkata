@@ -27,6 +27,8 @@ export interface PracticeDependencies {
   /** Told about new work so evaluation starts at once instead of at the next poll. */
   worker: { nudge(): void };
   reviewLimiter?: RateLimiter;
+  /** Caps reviews across everyone: learner ids come from the browser, so a per-learner limit alone can be dodged. */
+  globalLimiter?: RateLimiter;
   now?: () => Date;
   newId?: () => string;
 }
@@ -47,6 +49,7 @@ export class PracticeService {
   private readonly submissions: SubmissionRepository;
   private readonly worker: { nudge(): void };
   private readonly reviewLimiter: RateLimiter;
+  private readonly globalLimiter: RateLimiter;
   private readonly now: () => Date;
   private readonly newId: () => string;
   private readonly analyzer = new SubmissionAnalyzer();
@@ -57,6 +60,7 @@ export class PracticeService {
     this.submissions = deps.submissions;
     this.worker = deps.worker;
     this.reviewLimiter = deps.reviewLimiter ?? new RateLimiter(12, 60 * 60 * 1000);
+    this.globalLimiter = deps.globalLimiter ?? new RateLimiter(200, 60 * 60 * 1000);
     this.now = deps.now ?? (() => new Date());
     this.newId = deps.newId ?? randomUUID;
   }
@@ -203,8 +207,12 @@ export class PracticeService {
   }
 
   private takeReview(learnerId: string): void {
-    if (!this.reviewLimiter.take(learnerId, this.now().getTime())) {
+    const now = this.now().getTime();
+    if (!this.reviewLimiter.take(learnerId, now)) {
       throw new DomainError('rate-limited', 'That is a lot of reviews in one hour. Take a short break and try again.');
+    }
+    if (!this.globalLimiter.take('everyone', now)) {
+      throw new DomainError('rate-limited', 'The reviewer is busy right now. Try again in a few minutes.');
     }
   }
 }
