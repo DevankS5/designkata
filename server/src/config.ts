@@ -27,7 +27,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env, argv: string[] 
       ? {
           apiKey,
           model: env.LLM_MODEL?.trim() || DEFAULT_MODEL,
-          reasoning: reasoning === 'off' || reasoning === 'medium' || reasoning === 'high' ? reasoning : 'low',
+          // Off by default: on the sample design it gave the same levels in 15 s instead of 41 s.
+          reasoning: reasoning === 'low' || reasoning === 'medium' || reasoning === 'high' ? reasoning : 'off',
         }
       : undefined,
   };
