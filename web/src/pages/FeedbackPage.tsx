@@ -48,9 +48,10 @@ export function FeedbackPage() {
     };
   }, [submissionId, poll]);
 
+  const slug = submission?.problemSlug;
   useEffect(() => {
-    if (submission && !problem) api.problem(submission.problemSlug).then(setProblem, setError);
-  }, [submission, problem]);
+    if (slug) api.problem(slug).then(setProblem, setError);
+  }, [slug]);
 
   const pending = submission?.evaluation.status === 'SUBMITTED' || submission?.evaluation.status === 'EVALUATING';
   useEffect(() => {

@@ -140,7 +140,10 @@ export function WorkspacePage() {
     setError(null);
     submitKey.current ??= crypto.randomUUID();
     try {
-      const submission = await api.submit(attempt!.id, buildContent(sections, diagram), submitKey.current, twistMode ? problem!.twist.id : undefined);
+      // "What changed and why" belongs to the twist; a normal revision does not send it.
+      const { changeAnswer: _unused, ...plain } = sections;
+      const notes = twistMode ? sections : plain;
+      const submission = await api.submit(attempt!.id, buildContent(notes, diagram), submitKey.current, twistMode ? problem!.twist.id : undefined);
       submitKey.current = null;
       navigate(`/submissions/${submission.id}`);
     } catch (e) {
