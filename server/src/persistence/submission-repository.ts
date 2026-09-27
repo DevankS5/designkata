@@ -55,7 +55,7 @@ export class SubmissionRepository {
   }
 
   async listForLearner(learnerId: string): Promise<Submission[]> {
-    const docs = await this.models.Submission.find({ learnerId }).sort({ createdAt: 1 }).lean<SubmissionDoc[]>();
+    const docs = await this.models.Submission.find({ learnerId }).sort({ createdAt: 1, _id: 1 }).lean<SubmissionDoc[]>();
     return docs.map(toSubmission);
   }
 
