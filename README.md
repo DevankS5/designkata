@@ -40,29 +40,17 @@ Choose a problem -> design (notes + Mermaid diagram) -> submit (202, stored firs
   -> revise (level changes per criterion) or take the twist (blast radius) -> progress
 ```
 
-- **What you submit.** Five guided notes (requirements, entities, flows, trade-offs, edge cases) plus a class diagram written as Mermaid text. Because the diagram is text, it can be parsed into classes and relationships, checked, and diffed between versions.
-- **Deterministic checks** run instantly and cost nothing:
-  - required sections;
-  - diagram syntax;
-  - core concepts, matched by the names learners actually use;
-  - a god class;
-  - a part of the problem that varies but has no abstraction;
-  - dependency loops;
-  - orphan classes;
-  - public state;
-  - deep inheritance;
-  - edge cases never mentioned.
-- **The rubric.** Six criteria, each on four levels, and each level described in words. There is no total score. The AI reviewer must quote evidence before it picks a level, and `EvidenceVerifier` checks every quote against what you wrote.
-- **Slow or failed reviews:**
-  - The submission is stored first. A background worker claims the review with a lease.
-  - Rule findings show while the AI works.
-  - Provider errors are retried with backoff. A failed review keeps the rule findings and can be retried.
-  - A crashed worker's job is picked up again.
-  - The same `Idempotency-Key` never creates a duplicate.
+A submission is five guided notes (requirements, entities, flows, trade-offs, edge cases) plus a class diagram written as Mermaid text. Because the diagram is text, it can be parsed into classes and relationships, checked, and diffed between versions.
+
+Ten deterministic rules run instantly and cost nothing. They check the required sections, the diagram syntax, and whether the core concepts appear (matched by the names learners actually use). They also flag a god class, a part of the problem that varies but has no abstraction, dependency loops, orphan classes, public state, deep inheritance, and edge cases the notes never mention.
+
+The rubric has six criteria, each on four levels that are described in words, and no total score. The AI reviewer must quote evidence before it picks a level, and `EvidenceVerifier` checks every quote against what you wrote.
+
+When a review is slow or fails, nothing is lost. The submission is stored first and a background worker claims the review with a lease, so rule findings show while the AI works. Provider errors are retried with backoff, and a failed review keeps its rule findings and can be retried. If the worker crashes, its job is picked up again, and the same `Idempotency-Key` never creates a duplicate.
 
 The design note has the domain model, the state machine, the failure table and both change tests.
 
-## Numbers, measured rather than claimed
+## Measured results
 
 | What | Result |
 |---|---|
@@ -104,11 +92,11 @@ docs/                    notes, decision log, diagrams, experiment output, PDFs
 
 ## Limitations
 
-- **No accounts.** The browser keeps a random learner id. A real product would use CipherSchools sign-in.
-- **The rules are heuristics.** Thresholds such as eight methods for a god class are starting points to tune with real learners.
-- **The Mermaid parser covers a subset:** the syntax learners write, not all of Mermaid.
-- **The calibration set is small:** three designs on one problem. The reviewer is also strict, and level 4 is rare.
-- **Rate limiting is per process,** at 12 reviews per learner per hour. A shared store would take over with more than one instance.
+- No accounts. The browser keeps a random learner id; a real product would use CipherSchools sign-in.
+- The rules are heuristics. Thresholds such as eight methods for a god class are starting points to tune with real learners.
+- The Mermaid parser covers the syntax learners write, not all of Mermaid.
+- The calibration set is small (three designs on one problem), and the reviewer is strict, so level 4 is rare.
+- Rate limiting (12 reviews per learner per hour) is per process. A shared store would take over with more than one instance.
 
 ## Author
 

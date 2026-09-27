@@ -49,7 +49,7 @@ classDiagram
   EvaluationWorker --> SubmissionEvaluator
 ```
 
-The evaluation side: formats in, judges out.
+The evaluation side: how a submission is read, then judged.
 
 ```mermaid
 classDiagram
@@ -102,27 +102,13 @@ interface LlmClient { readonly model: string; complete(request: LlmRequest): Pro
 
 ## 4. Evaluation
 
-**Rubric:**
-- **The six criteria:**
-  1. Requirements and scope
-  2. Responsibilities and cohesion
-  3. Relationships, coupling and encapsulation
-  4. Abstraction and extensibility
-  5. Behaviour and edge cases
-  6. Trade-offs and communication
-- **Levels:** each criterion is judged on four levels, and each level is a sentence describing what a design at that level looks like.
-- **Coverage:** together they cover the helping guide's eight dimensions.
-- **No total:** there is no overall score, on purpose.
+**Rubric.** Six criteria, together covering the helping guide's eight dimensions: (1) requirements and scope, (2) responsibilities and cohesion, (3) relationships, coupling and encapsulation, (4) abstraction and extensibility, (5) behaviour and edge cases, (6) trade-offs and communication. Each is judged on four levels, and each level is a sentence describing what a design at that level looks like. There is deliberately no overall score.
 
-**The LLM contract:**
-- **Output shape:** the model returns strict JSON, keyed by criterion, so it cannot skip or repeat one. For each criterion it gives evidence, strength, concern, level, suggestion and confidence, in that order, so it quotes before it commits to a level.
-- **Settings:** temperature 0 and a fixed seed.
-- **Validation:** zod validates the answer. An invalid answer goes back once with the exact error, and a second failure is final.
-- **Injection guard:** the learner's text is fenced as data.
-- **Verification:** code checks every quote against the learner's own text. A criterion whose quotes all fail drops to low confidence.
-- **Guard in action:** in testing it caught the model quoting our own rule finding as if the learner wrote it. The prompt was fixed, and the verifier stays.
+**The LLM contract.** The model answers in strict JSON keyed by criterion, so it cannot skip or repeat one. For each criterion it gives evidence, strength, concern, level, suggestion and confidence, in that order, which makes it quote before it commits to a level. Calls use temperature 0 and a fixed seed, and the learner's text is fenced as data so instructions inside it are ignored. zod validates every answer; an invalid one goes back once with the exact error, and a second failure is final.
 
-**Measured, not assumed** (`docs/experiments/`):
+Then code checks every quote against the learner's own text, and a criterion whose quotes all fail drops to low confidence. In testing this caught the model quoting our own rule finding as if the learner had written it. I fixed the prompt and kept the verifier.
+
+**Measurements** (raw output in `docs/experiments/`):
 
 | Check | Result |
 |---|---|
@@ -210,26 +196,12 @@ The practice flow still only submits, nudges and reads reports.
 
 ## 8. Scale, lightly
 
-The first thing to separate is the worker. Run it as its own process reading a real queue (BullMQ on Redis, or SQS), with the same claim-and-lease contract, so slow reviews never compete with web requests. After that:
-- **Caching:** cache reviews by content hash, so resubmitting an identical design costs nothing.
-- **Rate limiting:** move the rate limiter to Redis.
-- **Database:** MongoDB Atlas already handles more reads, and the queries are indexed by learner and by status.
+The first thing to separate is the worker. It would run as its own process reading a real queue (BullMQ on Redis, or SQS) with the same claim-and-lease contract, so slow reviews never compete with web requests. Next, reviews would be cached by content hash so an identical resubmission costs nothing, and the rate limiter would move to Redis. MongoDB Atlas already handles more reads, and the queries are indexed by learner and by status.
 
 ## 9. Limitations and next steps
 
-**Limitations:**
-- **No accounts:** the learner id lives in the browser.
-- **Rules are heuristics:** thresholds such as eight methods are guesses to tune with real learners.
-- **Parser subset:** the Mermaid parser covers the syntax learners use, not all of it.
-- **Small calibration set:** three designs on one problem.
-- **Cold starts:** the free Render tier sleeps after idle time, so the first request can take a minute.
+**Limitations.** There are no accounts; the learner id lives in the browser. The rules are heuristics, and thresholds such as eight methods are guesses to tune with real learners. The Mermaid parser covers the syntax learners use, not all of Mermaid. The calibration set is small: three designs on one problem. The free Render tier sleeps when idle, so the first request can take a minute.
 
-**Next steps:**
-- Human review.
-- Code submissions.
-- A calibration set per problem.
-- A timed interview mode.
-- A hint ladder.
-- Sign-in with CipherSchools accounts.
+**Next steps.** Human review, code submissions, a calibration set per problem, a timed interview mode, a hint ladder, and sign-in with CipherSchools accounts.
 
 **Tests:** 166 across unit, integration and end-to-end, run against a real MongoDB with a fake LLM. They cover every rule, the state machine, idempotency, concurrent claims, lease recovery, a failed review and its retry, validation and ownership. CI runs them on every push.

@@ -2,7 +2,7 @@
 
 I built DesignKata with **Claude Code** (Anthropic's coding agent) as my pair programmer. Inside the product, an LLM (**DeepSeek v4.1 Flash via OpenRouter**) is the rubric reviewer.
 
-To be clear about the split:
+Who did what:
 - **Claude:** wrote most of the code and the first drafts of these documents.
 - **Me:** set the constraints, made the calls below, reviewed the work and used the app end to end.
 - **The tests:** 166 of them, run in CI, decided whether any of it was actually right.
