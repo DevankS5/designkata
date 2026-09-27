@@ -47,11 +47,13 @@ export class OpenRouterClient implements LlmClient {
   }
 
   private async completeOnce(request: LlmRequest): Promise<string> {
+    // The timeout covers the whole exchange, including reading the body, so a stalled stream cannot hang a job.
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.timeoutMs);
-    let response: Response;
+    let status: number;
+    let text: string;
     try {
-      response = await this.fetchImpl(ENDPOINT, {
+      const response = await this.fetchImpl(ENDPOINT, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${this.apiKey}`,
@@ -61,6 +63,8 @@ export class OpenRouterClient implements LlmClient {
         body: JSON.stringify(this.body(request)),
         signal: controller.signal,
       });
+      status = response.status;
+      text = await response.text();
     } catch (error) {
       const reason = controller.signal.aborted ? `timed out after ${this.timeoutMs} ms` : String(error);
       throw new LlmError(`Could not reach the AI reviewer: ${reason}`, true);
@@ -68,16 +72,17 @@ export class OpenRouterClient implements LlmClient {
       clearTimeout(timer);
     }
 
-    if (!response.ok) {
-      const detail = (await response.text().catch(() => '')).slice(0, 300);
-      const retryable = response.status === 408 || response.status === 429 || response.status >= 500;
-      throw new LlmError(`The AI reviewer returned HTTP ${response.status}. ${detail}`.trim(), retryable, response.status);
+    if (status < 200 || status >= 300) {
+      const retryable = status === 408 || status === 429 || status >= 500;
+      throw new LlmError(`The AI reviewer returned HTTP ${status}. ${text.slice(0, 300)}`.trim(), retryable, status);
     }
 
-    const data = (await response.json()) as {
-      error?: { message?: string; code?: number };
-      choices?: { message?: { content?: string | null } }[];
-    };
+    let data: { error?: { message?: string; code?: number }; choices?: { message?: { content?: string | null } }[] };
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new LlmError('The AI reviewer sent a response that is not JSON.', true);
+    }
     if (data.error) {
       const code = data.error.code ?? 500;
       throw new LlmError(`The AI reviewer failed: ${data.error.message ?? 'unknown error'}`, code === 429 || code >= 500, code);

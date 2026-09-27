@@ -94,6 +94,32 @@ describe('OpenRouterClient', () => {
     expect(calls).toHaveLength(3);
   });
 
+  it('retries a 200 response whose body is not JSON', async () => {
+    const { openRouter, calls } = client([new Response('<html>busy</html>', { status: 200 }), ok('{"fine":true}')]);
+    await expect(openRouter.complete(REQUEST)).resolves.toBe('{"fine":true}');
+    expect(calls).toHaveLength(2);
+  });
+
+  it('times out while reading a stalled body, not only while waiting for headers', async () => {
+    // Like real fetch: aborting the signal errors a body that is still streaming.
+    const openRouter = new OpenRouterClient({
+      apiKey: 'k',
+      model: 'm',
+      timeoutMs: 50,
+      attempts: 1,
+      fetch: (async (_url: string | URL | Request, init?: RequestInit) =>
+        new Response(
+          new ReadableStream({
+            start(controller) {
+              init?.signal?.addEventListener('abort', () => controller.error(new Error('aborted')));
+            },
+          }),
+          { status: 200 },
+        )) as typeof fetch,
+    });
+    await expect(openRouter.complete(REQUEST)).rejects.toThrow('timed out after 50 ms');
+  });
+
   it('reports an error object inside a 200 response', async () => {
     const { openRouter } = client([
       new Response(JSON.stringify({ error: { message: 'No provider supports json_schema', code: 404 } }), { status: 200 }),
