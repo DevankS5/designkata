@@ -7,7 +7,7 @@
 import { z } from 'zod';
 import { SubmissionAnalyzer } from '../src/analysis/submission-analyzer.ts';
 import { loadConfig } from '../src/config.ts';
-import { RUBRIC } from '../src/domain/rubric.ts';
+import { RUBRIC } from '../../shared/rubric.ts';
 import type { EvaluationContext } from '../src/evaluation/evaluator.ts';
 import { LlmRubricEvaluator } from '../src/evaluation/llm-rubric-evaluator.ts';
 import { RuleBasedEvaluator } from '../src/evaluation/rule-evaluator.ts';

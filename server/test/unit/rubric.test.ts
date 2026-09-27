@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CRITERION_IDS, RUBRIC } from '../../src/domain/rubric.ts';
+import { CRITERION_IDS, RUBRIC } from '../../../shared/rubric.ts';
 
 describe('RUBRIC', () => {
   it('has six distinct criteria', () => {

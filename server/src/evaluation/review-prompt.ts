@@ -1,6 +1,6 @@
 import type { ArtifactKind, NoteSectionId } from '../../../shared/types.ts';
 import { describeRelationship } from '../domain/design-model.ts';
-import { RUBRIC } from '../domain/rubric.ts';
+import { RUBRIC } from '../../../shared/rubric.ts';
 import type { LlmMessage } from '../llm/llm-client.ts';
 import type { EvaluationContext } from './evaluator.ts';
 

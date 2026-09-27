@@ -1,4 +1,4 @@
-import type { CriterionDefinition, CriterionId } from '../../../shared/types.ts';
+import type { CriterionDefinition, CriterionId } from './types.ts';
 
 // Six criteria, each judged on four anchored levels. Anchors describe what a
 // design at that level looks like, so two different designs can both reach 4.

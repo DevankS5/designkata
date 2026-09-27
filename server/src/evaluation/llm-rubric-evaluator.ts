@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { CriterionFeedback, CriterionId, Level } from '../../../shared/types.ts';
-import { CRITERION_IDS } from '../domain/rubric.ts';
+import { CRITERION_IDS } from '../../../shared/rubric.ts';
 import type { LlmClient } from '../llm/llm-client.ts';
 import { generateStructured } from '../llm/structured.ts';
 import type { EvaluationContext, Evaluator, EvaluatorResult } from './evaluator.ts';

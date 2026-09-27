@@ -1,5 +1,5 @@
 import type { FeedbackReport, RecurringFindingDto, WeaknessDto } from '../../../shared/types.ts';
-import { RUBRIC } from '../domain/rubric.ts';
+import { RUBRIC } from '../../../shared/rubric.ts';
 
 // ponytail: "recent" means the last five reviews and "recurring" means twice;
 // both are guesses to tune with real learners.

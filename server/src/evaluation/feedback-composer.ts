@@ -5,7 +5,7 @@ import type {
   FeedbackReport,
   Finding,
 } from '../../../shared/types.ts';
-import { CRITERION_IDS } from '../domain/rubric.ts';
+import { CRITERION_IDS } from '../../../shared/rubric.ts';
 import type { EvaluatorResult } from './evaluator.ts';
 
 /** Merges what every evaluator said into the one report the learner reads. */
